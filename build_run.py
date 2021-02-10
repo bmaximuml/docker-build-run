@@ -107,11 +107,11 @@ class BuildRun(object):
                 print('\nView logs with:')
                 print(f'\tdocker logs {name}')
 
-                print(f'Waiting {str(wait)} seconds to ensure container stays up...')
+                print(f'\nWaiting {str(wait)} seconds to ensure container stays up...')
                 run_success = True
                 while wait >= 0:
                     if api_client.containers(filters={'name': f'^{name}$'}):
-                        print(f'\r\t{wait}: Running', end='', flush=True)
+                        print(f'\r\t{wait}: Running    ', end='', flush=True)
                         wait -= 1
                         sleep(1)
                     else:
