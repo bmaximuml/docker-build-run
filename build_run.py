@@ -131,6 +131,8 @@ class BuildRun(object):
                 [print(f'\t{line["status"]}: {line["progressDetail"]}') for line in api_client.push(f'{repo_name}/{user}', tag=env, stream=True, decode=True) if verbose >= 2 and 'status' in line and 'progressDetail' in line]
             except docker.errors.APIError:
                 raise BuildRunError(103, f'Failed to push {repo_name}/{user}:{env}')
+            if verbose >= 1:
+                print(f'Pushed image: {repo_name}/{user}:{env}')
 
 
 @click.command()
