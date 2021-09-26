@@ -19,7 +19,7 @@ class BuildRunError(Exception):
 
 
 class BuildRun(object):
-    def main(self, user, dir, cache, pull, rm, detach, env, wait, push, run, build, repo_name, port, volume, dockerfile, verbose):
+    def main(self, user, dir, cache, pull, rm, detach, env, wait, push, run, build, repo_name, port, volume, network, dockerfile, verbose):
         client = docker.from_env()
         api_client = APIClient(base_url='unix://var/run/docker.sock')
         name = f'{user}_{env}'
@@ -65,6 +65,7 @@ class BuildRun(object):
                 'ports': {p.split(':')[0]: p.split(':')[1] for p in port},
                 'volumes': {v.split(':')[0]: {'bind': v.split(':')[1]} for v in volume},
                 'detach': detach,
+                'network': network,
             }
 
             if verbose >= 2:
@@ -150,12 +151,13 @@ class BuildRun(object):
 @click.option('-o', '--repo-name', type=str, default='benjilev08', show_default=True, help='Docker repository name')
 @click.option('-p', '--port', type=str, multiple=True, help='Ports to bind, in the form internal/mode:external, e.g. 80/tcp:8080')
 @click.option('--volume', type=str, multiple=True, help='Volumes to bind in, in the form external:internal')
+@click.option('--network', type=str, help='Network to attach container to')
 @click.option('--dockerfile', type=str, help='Name of the Dockerfile within the build context')
 @click.option('-v', '--verbose', count=True)
-def main(user, dir, cache, pull, rm, detach, env, wait, push, run, build, repo_name, port, volume, dockerfile, verbose):
+def main(user, dir, cache, pull, rm, detach, env, wait, push, run, build, repo_name, port, volume, network, dockerfile, verbose):
     b = BuildRun()
     try:
-        b.main(user, dir, cache, pull, rm, detach, env, wait, push, run, build, repo_name, port, volume, dockerfile, verbose)
+        b.main(user, dir, cache, pull, rm, detach, env, wait, push, run, build, repo_name, port, volume, network, dockerfile, verbose)
     except BuildRunError as e:
         print(e)
 
